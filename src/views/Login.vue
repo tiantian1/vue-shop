@@ -62,19 +62,16 @@ export default {
           // alert('submit!');
           this.$http.login(this.loginForm).then(res => {
             console.log(res)
-            if (res.status) {
-              let data = res.data
-              if (data.meta.status == 200) {
-                this.$message.success(data.meta.msg)
-                //存储token，用户信息
-                window.sessionStorage.setItem('token', data.data.token)
-                this.$router.push('/home')
-              } else {
-                this.$message.error(data.meta.msg)
-              }
+
+            if (res.meta.status == 200) {
+              this.$message.success(res.meta.msg)
+              //存储token，用户信息
+              window.sessionStorage.setItem('token', res.data.token)
+              this.$router.push('/home')
             } else {
-              this.$message.error('登录失败')
+              this.$message.error(res.meta.msg)
             }
+
           })
         } else {
           console.log('error submit!!')

@@ -1,23 +1,39 @@
-import axios from './base'
+import request from './base'
 //设置请求基地址
-const baseURL = "";
 
-const API = {
-  login: '/login', //登录
-}
-
-const method = {}
-
-Object.keys(API).map((key, i) => {
-  method[key] = (param) => {
-    let url = baseURL + API[key];
-    return response(url, param)
-  }
-})
-
-function response (url, params, callback) {
+let get = (url, params) => {
   return new Promise((resolve, reject) => {
-    axios.post(url, params).then(res => {
+    request.get(url, { params }).then(res => {
+      resolve(res);
+    })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+let post = (url, data) => {
+  return new Promise((resolve, reject) => {
+    request.post(url, data).then(res => {
+      resolve(res);
+    })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+};
+let deletes = (url, data) => {
+  return new Promise((resolve, reject) => {
+    request.delete(url, { data }).then(res => {
+      resolve(res);
+    })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+let put = (url, data) => {
+  return new Promise((resolve, reject) => {
+    request.put(url, data).then(res => {
       resolve(res);
     })
       .catch((err) => {
@@ -27,15 +43,39 @@ function response (url, params, callback) {
 }
 
 
-function getResp (url, params, callback) {
-  return new Promise((resolve, reject) => {
-    axios.get(url).then(res => {
-      resolve(res);
-    })
-      .catch((err) => {
-        reject(err)
-      })
-  })
+function login (data) {
+  return post('/login', data)
 }
+function getMenus (params) {
+  return get('/menus', params)
+}
+function getUsers (params) {
+  return get('/users', params)
 
-export default method;
+}
+function changeUserState (data) {
+  return put(`users/${data.uId}/state/${data.type}`, data)
+}
+function addUser (data) {
+  return post('/users', data)
+}
+function searchUserById (params) {
+  return get(`/users/${params.id}`)
+}
+function editUser (data) {
+  return put(`users/${data.id}`, data)
+}
+function deleteUser (data) {
+  return deletes(`users/${data.id}`, data)
+
+}
+export default {
+  login,
+  getMenus,
+  getUsers,
+  changeUserState,
+  addUser,
+  searchUserById,
+  editUser,
+  deleteUser
+};
